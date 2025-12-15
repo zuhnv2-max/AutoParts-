@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom corner radius attributes -->
+    <attr name="cornerRadiusSmall" format="dimension" />
+    <attr name="cornerRadiusMedium" format="dimension" />
+    <attr name="cornerRadiusLarge" format="dimension" />
+    <attr name="buttonCornerRadius" format="dimension" />
+
+    <!-- Custom spacing attributes -->
+    <attr name="spacingExtraSmall" format="dimension" />
+    <attr name="spacingSmall" format="dimension" />
+    <attr name="spacingMedium" format="dimension" />
+    <attr name="spacingLarge" format="dimension" />
+    <attr name="spacingExtraLarge" format="dimension" />
+
+    <!-- Custom elevation attributes -->
+    <attr name="elevationLow" format="dimension" />
+    <attr name="elevationMedium" format="dimension" />
+    <attr name="elevationHigh" format="dimension" />
+
+    <!-- Custom color attributes -->
+    <attr name="colorBrandPrimary" format="color" />
+    <attr name="colorBrandSecondary" format="color" />
+    <attr name="colorSurfaceVariant" format="color" />
+    <attr name="colorOutline" format="color" />
+
+    <!-- Typography attributes (если хотите кастомные) -->
+    <attr name="textAppearanceLargeTitle" format="reference" />
+    <attr name="textAppearanceTitle" format="reference" />
+    <attr name="textAppearanceBody" format="reference" />
+    <attr name="textAppearanceCaption" format="reference" />
+</resources>

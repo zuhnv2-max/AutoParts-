@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Заголовок товара -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/textProductName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Название товара"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/textArticle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Арт: -"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:padding="4dp" />
+
+        </LinearLayout>
+
+        <!-- Информация о товаре -->
+        <TextView
+            android:id="@+id/textBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Бренд: -"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/textPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Цена: 0.00 ₽"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FF2196F3"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Категория: -"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Разделитель -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Кнопки управления -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Кнопка редактирования -->
+            <Button
+                android:id="@+id/buttonEdit"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="ИЗМЕНИТЬ"
+                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white"
+                android:background="#FF4CAF50"
+                android:drawableStart="@android:drawable/ic_menu_edit"
+                android:drawablePadding="8dp"
+                android:gravity="center" />
+
+            <!-- Кнопка удаления -->
+            <Button
+                android:id="@+id/buttonDelete"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="УДАЛИТЬ"
+                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white"
+                android:background="#FFF44336"
+                android:drawableStart="@android:drawable/ic_menu_delete"
+                android:drawablePadding="8dp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

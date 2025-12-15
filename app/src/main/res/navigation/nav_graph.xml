@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_catalog">
+
+    <!-- Каталог -->
+    <fragment
+        android:id="@+id/navigation_catalog"
+        android:name="com.autoparts.ui.catalog.CatalogFragment"
+        android:label="@string/title_catalog"
+        tools:layout="@layout/fragment_catalog" />
+
+    <!-- Корзина -->
+    <fragment
+        android:id="@+id/navigation_cart"
+        android:name="com.autoparts.ui.cart.CartFragment"
+        android:label="@string/title_cart"
+        tools:layout="@layout/fragment_cart" />
+
+    <!-- Заказы -->
+    <fragment
+        android:id="@+id/navigation_orders"
+        android:name="com.autoparts.ui.orders.OrdersFragment"
+        android:label="@string/title_orders"
+        tools:layout="@layout/fragment_orders" />
+
+    <!-- Профиль -->
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.autoparts.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile">
+
+        <!-- Действие для перехода к редактированию профиля -->
+        <action
+            android:id="@+id/action_navigation_profile_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+
+    </fragment>
+
+    <!-- Редактирование профиля -->
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.autoparts.ui.profile.EditProfileFragment"
+        android:label="Редактирование профиля"
+        tools:layout="@layout/fragment_edit_profile">
+
+        <!-- Действие для возврата к профилю -->
+        <action
+            android:id="@+id/action_editProfileFragment_to_navigation_profile"
+            app:destination="@id/navigation_profile"
+            app:popUpTo="@id/navigation_profile"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <!-- Админ-панель -->
+    <fragment
+        android:id="@+id/navigation_admin"
+        android:name="com.autoparts.ui.admin.AdminFragment"
+        android:label="@string/title_admin"
+        tools:layout="@layout/fragment_admin_simple">
+
+        <!-- Действие для перехода к управлению заказами -->
+        <action
+            android:id="@+id/action_navigation_admin_to_admin_orders"
+            app:destination="@id/navigation_admin_orders" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_admin_orders"
+        android:name="com.autoparts.ui.admin.AdminOrdersFragment"
+        android:label="Управление заказами"
+        tools:layout="@layout/fragment_admin_orders">
+
+        <!-- Действие для возврата -->
+        <action
+            android:id="@+id/action_admin_orders_to_navigation_admin"
+            app:destination="@id/navigation_admin"
+            app:popUpTo="@id/navigation_admin"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+</navigation>

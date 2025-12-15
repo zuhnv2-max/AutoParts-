@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Номер заказа и дата -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/orderNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ORD-251215-0001"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/orderDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15.12.2025 11:34"
+                android:textColor="#757575"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <!-- Статус заказа -->
+        <TextView
+            android:id="@+id/orderStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Ожидает обработки"
+            android:textColor="#FF9800"
+            android:textSize="14sp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:background="@drawable/status_background" />
+
+        <!-- Итоговая сумма -->
+        <TextView
+            android:id="@+id/orderTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="3499 руб."
+            android:textColor="#673AB7"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Количество товаров -->
+        <TextView
+            android:id="@+id/orderItemsCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Товаров: 3"
+            android:textColor="#757575"
+            android:textSize="14sp" />
+
+        <!-- Кнопка деталей -->
+        <Button
+            android:id="@+id/viewDetailsButton"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:text="Детали заказа"
+            android:backgroundTint="#2196F3"
+            android:textColor="#FFFFFF"
+            style="@style/AppButton.Small" />
+
+        <!-- Кнопка изменения статуса (только для админа) -->
+        <Button
+            android:id="@+id/changeStatusButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#673AB7"
+            android:text="Изменить статус"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

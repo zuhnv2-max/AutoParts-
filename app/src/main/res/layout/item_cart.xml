@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Название товара -->
+        <TextView
+            android:id="@+id/cartProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Масляный фильтр Mann-Filter W 914/2"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!-- Цена за единицу -->
+        <TextView
+            android:id="@+id/cartProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="799 руб."
+            android:textColor="#757575"
+            android:textSize="14sp" />
+
+        <!-- Управление количеством -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Количество:"
+                android:textColor="#757575"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/cartDecreaseButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="−"
+                android:textSize="20sp"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#212121"
+                android:padding="0dp"
+                android:gravity="center"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:id="@+id/cartQuantityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="16sp"
+                android:textColor="#212121"
+                android:paddingHorizontal="12dp"
+                android:minWidth="30dp"
+                android:gravity="center" />
+
+            <Button
+                android:id="@+id/cartIncreaseButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="+"
+                android:textSize="20sp"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#212121"
+                android:padding="0dp"
+                android:gravity="center"
+                android:textAllCaps="false" />
+
+            <!-- Итого -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Итого:"
+                android:textColor="#757575"
+                android:textSize="14sp"
+                android:gravity="end"
+                android:paddingEnd="8dp" />
+
+            <TextView
+                android:id="@+id/cartTotalPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="799 руб."
+                android:textColor="#673AB7"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Кнопка удаления -->
+        <Button
+            android:id="@+id/cartRemoveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#FF5252"
+            android:gravity="center"
+            android:text="Удалить"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Навигация -->
+    <string name="title_home">Каталог</string>
+    <string name="title_catalog">Каталог</string>
+    <string name="title_cart">Корзина</string>
+    <string name="title_orders">Заказы</string>
+    <string name="title_profile">Профиль</string>
+    <string name="title_admin">Админ</string>
+
+    <!-- Auth -->
+    <string name="login">Вход</string>
+    <string name="register">Регистрация</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="phone">Телефон</string>
+    <string name="name">Имя</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="already_have_account">Уже есть аккаунт? Войдите</string>
+    <string name="no_account">Нет аккаунта? Зарегистрируйтесь</string>
+
+    <!-- Общие -->
+    <string name="app_name">AutoParts</string>
+    <string name="add_to_cart">В корзину</string>
+    <string name="remove">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="price">Цена</string>
+    <string name="quantity">Количество</string>
+    <string name="total">Итого</string>
+    <string name="clear">Очистить</string>
+    <string name="checkout">Оформить заказ</string>
+    <string name="logout">Выйти</string>
+
+    <!-- Профиль -->
+    <string name="my_orders">Мои заказы</string>
+    <string name="edit_profile">Редактировать профиль</string>
+
+    <!-- Заказы -->
+    <string name="order_number">Заказ №</string>
+    <string name="order_date">Дата заказа</string>
+    <string name="order_status">Статус</string>
+    <string name="order_total">Сумма заказа</string>
+    <string name="order_items">Товары</string>
+
+    <!-- Админ -->
+    <string name="admin_panel">Панель администратора</string>
+    <string name="manage_products">Управление товарами</string>
+    <string name="manage_orders">Управление заказами</string>
+    <string name="all_orders">Все заказы</string>
+    <string name="add_product">Добавить товар</string>
+    <string name="product_name">Название товара</string>
+    <string name="article">Артикул</string>
+    <string name="brand">Бренд</string>
+    <string name="description">Описание</string>
+    <string name="category">Категория</string>
+    <string name="vin_numbers">VIN номера</string>
+    <string name="compatible_cars">Совместимые авто</string>
+
+    <!-- Статусы заказов -->
+    <string name="status_pending">Ожидает обработки</string>
+    <string name="status_processing">В обработке</string>
+    <string name="status_shipped">Отправлен</string>
+    <string name="status_delivered">Доставлен</string>
+    <string name="status_cancelled">Отменен</string>
+
+    <!-- Сообщения -->
+    <string name="empty_cart">Корзина пуста</string>
+    <string name="empty_orders">У вас пока нет заказов</string>
+    <string name="empty_products">Товары не найдены</string>
+
+    <!-- Ошибки -->
+    <string name="error_required">Обязательное поле</string>
+    <string name="error_invalid_email">Некорректный email</string>
+    <string name="error_password_mismatch">Пароли не совпадают</string>
+    <string name="error_phone_invalid">Некорректный номер телефона</string>
+
+    <!-- Успех -->
+    <string name="success_login">Вход выполнен успешно</string>
+    <string name="success_register">Регистрация выполнена успешно</string>
+    <string name="success_order_created">Заказ успешно создан</string>
+    <string name="success_profile_updated">Профиль обновлен</string>
+    <string name="success_product_added">Товар добавлен</string>
+</resources>
