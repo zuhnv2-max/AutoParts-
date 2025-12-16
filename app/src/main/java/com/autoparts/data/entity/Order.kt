@@ -5,10 +5,16 @@ data class Order(
     val userId: Int,
     val userName: String = "",
     val userEmail: String = "",
+    val userPhone: String = "", // ДОБАВЬТЕ ЭТО ПОЛЕ
     val totalAmount: Double,
     val status: String,
     val createdAt: String,
-    val itemsJson: String
+    val itemsJson: String,
+    val deliveryType: String = "pickup",
+    val paymentType: String = "cash",
+    val deliveryAddress: String = "",
+    val deliveryPhone: String = "",
+    val comment: String = ""
 ) {
     fun getFormattedStatus(): String {
         return when (status) {
@@ -26,6 +32,23 @@ data class Order(
             createdAt.substring(0, 10)
         } catch (e: Exception) {
             createdAt
+        }
+    }
+
+    fun getFormattedDelivery(): String {
+        return when (deliveryType) {
+            "pickup" -> "Самовывоз"
+            "delivery" -> "Доставка"
+            else -> deliveryType
+        }
+    }
+
+    fun getFormattedPayment(): String {
+        return when (paymentType) {
+            "cash" -> "Наличные"
+            "card" -> "Карта"
+            "online" -> "Онлайн"
+            else -> paymentType
         }
     }
 }

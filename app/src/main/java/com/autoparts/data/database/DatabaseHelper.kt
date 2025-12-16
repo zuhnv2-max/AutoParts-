@@ -14,7 +14,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     companion object {
         private const val TAG = "DatabaseHelper"
         private const val DATABASE_NAME = "autoparts.db"
-        private const val DATABASE_VERSION = 5  // Увеличиваем версию для обновления
+        private const val DATABASE_VERSION = 6  // Увеличиваем версию для добавления полей доставки
 
         // Таблица пользователей
         private const val TABLE_USERS = "users"
@@ -46,6 +46,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_STATUS = "status"
         private const val COLUMN_CREATED_AT = "created_at"
         private const val COLUMN_ITEMS_JSON = "items_json"
+        private const val COLUMN_DELIVERY_TYPE = "delivery_type"
+        private const val COLUMN_PAYMENT_TYPE = "payment_type"
+        private const val COLUMN_DELIVERY_ADDRESS = "delivery_address"
+        private const val COLUMN_DELIVERY_PHONE = "delivery_phone"
+        private const val COLUMN_COMMENT = "comment"
 
         // Таблица корзины
         private const val TABLE_CART = "cart"
@@ -62,19 +67,57 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         Log.w(TAG, "Обновление базы с версии $oldVersion на $newVersion")
+
+        // Если старая версия меньше 6, пересоздаем таблицу orders с новыми полями
+        if (oldVersion < 6) {
+            try {
+                Log.d(TAG, "Обновление таблицы orders до версии 6")
+
+                // Удаляем старую таблицу
+                db.execSQL("DROP TABLE IF EXISTS $TABLE_ORDERS")
+
+                // Создаем новую с дополнительными полями
+                val createOrdersTable = """
+                    CREATE TABLE IF NOT EXISTS $TABLE_ORDERS (
+                        $COLUMN_ORDER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                        $COLUMN_ORDER_USER_ID INTEGER NOT NULL,
+                        $COLUMN_TOTAL_AMOUNT REAL NOT NULL,
+                        $COLUMN_STATUS TEXT DEFAULT 'pending',
+                        $COLUMN_CREATED_AT TEXT DEFAULT CURRENT_TIMESTAMP,
+                        $COLUMN_ITEMS_JSON TEXT NOT NULL,
+                        $COLUMN_DELIVERY_TYPE TEXT DEFAULT 'pickup',
+                        $COLUMN_PAYMENT_TYPE TEXT DEFAULT 'cash',
+                        $COLUMN_DELIVERY_ADDRESS TEXT,
+                        $COLUMN_DELIVERY_PHONE TEXT,
+                        $COLUMN_COMMENT TEXT,
+                        FOREIGN KEY ($COLUMN_ORDER_USER_ID) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
+                    )
+                """.trimIndent()
+
+                db.execSQL(createOrdersTable)
+                Log.d(TAG, "Таблица orders успешно обновлена до версии 6")
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Ошибка обновления таблицы orders: ${e.message}", e)
+                // В случае ошибки пересоздаем все таблицы
+                dropAllTables(db)
+                createTables(db)
+                insertInitialData(db)
+            }
+        }
+
+        // Для других версий можно добавить аналогичные проверки
+    }
+
+    private fun dropAllTables(db: SQLiteDatabase) {
         try {
-            // Удаляем все таблицы
             db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
             db.execSQL("DROP TABLE IF EXISTS $TABLE_PRODUCTS")
             db.execSQL("DROP TABLE IF EXISTS $TABLE_ORDERS")
             db.execSQL("DROP TABLE IF EXISTS $TABLE_CART")
-
-            // Создаем заново
-            createTables(db)
-            insertInitialData(db)
-            Log.d(TAG, "База успешно пересоздана")
+            Log.d(TAG, "Все таблицы удалены")
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении базы: ${e.message}")
+            Log.e(TAG, "Ошибка удаления таблиц: ${e.message}")
         }
     }
 
@@ -108,23 +151,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 )
             """.trimIndent()
 
-            // Таблица заказов
+            // Таблица заказов - ВЕРСИЯ 6 С ДОПОЛНИТЕЛЬНЫМИ ПОЛЯМИ
             val createOrdersTable = """
-            CREATE TABLE IF NOT EXISTS $TABLE_ORDERS (
-                $COLUMN_ORDER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                $COLUMN_ORDER_USER_ID INTEGER NOT NULL,
-                $COLUMN_TOTAL_AMOUNT REAL NOT NULL,
-                $COLUMN_STATUS TEXT DEFAULT 'pending',
-                $COLUMN_CREATED_AT TEXT DEFAULT CURRENT_TIMESTAMP,
-                $COLUMN_ITEMS_JSON TEXT NOT NULL,
-                delivery_type TEXT DEFAULT 'pickup',
-                payment_type TEXT DEFAULT 'cash',
-                delivery_address TEXT,
-                delivery_phone TEXT,
-                comment TEXT,
-                FOREIGN KEY ($COLUMN_ORDER_USER_ID) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
-            )
-        """.trimIndent()
+                CREATE TABLE IF NOT EXISTS $TABLE_ORDERS (
+                    $COLUMN_ORDER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    $COLUMN_ORDER_USER_ID INTEGER NOT NULL,
+                    $COLUMN_TOTAL_AMOUNT REAL NOT NULL,
+                    $COLUMN_STATUS TEXT DEFAULT 'pending',
+                    $COLUMN_CREATED_AT TEXT DEFAULT CURRENT_TIMESTAMP,
+                    $COLUMN_ITEMS_JSON TEXT NOT NULL,
+                    $COLUMN_DELIVERY_TYPE TEXT DEFAULT 'pickup',
+                    $COLUMN_PAYMENT_TYPE TEXT DEFAULT 'cash',
+                    $COLUMN_DELIVERY_ADDRESS TEXT,
+                    $COLUMN_DELIVERY_PHONE TEXT,
+                    $COLUMN_COMMENT TEXT,
+                    FOREIGN KEY ($COLUMN_ORDER_USER_ID) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
+                )
+            """.trimIndent()
 
             // Таблица корзины
             val createCartTable = """
@@ -274,47 +317,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         return products
     }
-
-    fun createOrderWithDetails(
-        userId: Int,
-        totalAmount: Double,
-        itemsJson: String,
-        deliveryType: String,
-        paymentType: String,
-        address: String,
-        phone: String,
-        comment: String = ""
-    ): Long {
-        return try {
-            val db = this.writableDatabase
-            val values = ContentValues().apply {
-                put(COLUMN_ORDER_USER_ID, userId)
-                put(COLUMN_TOTAL_AMOUNT, totalAmount)
-                put(COLUMN_STATUS, "pending")
-                put(COLUMN_ITEMS_JSON, itemsJson)
-                put(COLUMN_CREATED_AT, System.currentTimeMillis().toString())
-
-                // Дополнительные поля для доставки и оплаты
-                put("delivery_type", deliveryType)
-                put("payment_type", paymentType)
-                put("delivery_address", address)
-                put("delivery_phone", phone)
-            }
-
-            val orderId = db.insert(TABLE_ORDERS, null, values)
-
-            // После создания заказа очищаем корзину пользователя
-            if (orderId != -1L) {
-                clearCart(userId)
-            }
-
-            orderId
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка создания заказа: ${e.message}")
-            -1
-        }
-    }
-
 
     fun getUserByEmail(email: String): User? {
         return try {
@@ -586,7 +588,58 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // ========== МЕТОДЫ ДЛЯ ЗАКАЗОВ ==========
+    fun createOrderWithDetails(
+        userId: Int,
+        totalAmount: Double,
+        itemsJson: String,
+        deliveryType: String,
+        paymentType: String,
+        address: String,
+        phone: String,
+        comment: String = ""
+    ): Long {
+        Log.d(TAG, "createOrderWithDetails: создание заказа для userId=$userId")
+
+        return try {
+            val db = this.writableDatabase
+            val values = ContentValues().apply {
+                put(COLUMN_ORDER_USER_ID, userId)
+                put(COLUMN_TOTAL_AMOUNT, totalAmount)
+                put(COLUMN_STATUS, "pending")
+                put(COLUMN_ITEMS_JSON, itemsJson)
+                put(COLUMN_CREATED_AT, System.currentTimeMillis().toString())
+
+                // Используем константы для новых полей
+                put(COLUMN_DELIVERY_TYPE, deliveryType)
+                put(COLUMN_PAYMENT_TYPE, paymentType)
+                put(COLUMN_DELIVERY_ADDRESS, address)
+                put(COLUMN_DELIVERY_PHONE, phone)
+                put(COLUMN_COMMENT, comment)
+            }
+
+            Log.d(TAG, "Вставляем заказ с данными: ${values.keySet()}")
+
+            val orderId = db.insert(TABLE_ORDERS, null, values)
+
+            Log.d(TAG, "Результат вставки: orderId=$orderId")
+
+            if (orderId != -1L) {
+                clearCart(userId)
+                Log.d(TAG, "Заказ успешно создан с ID: $orderId")
+            } else {
+                Log.e(TAG, "Ошибка: не удалось создать заказ")
+            }
+
+            orderId
+        } catch (e: Exception) {
+            Log.e(TAG, "Исключение в createOrderWithDetails: ${e.message}", e)
+            -1
+        }
+    }
+
     fun createOrder(userId: Int, totalAmount: Double, itemsJson: String): Long {
+        Log.d(TAG, "createOrder: создание базового заказа для userId=$userId")
+
         return try {
             val db = this.writableDatabase
             val values = ContentValues().apply {
@@ -596,16 +649,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 put(COLUMN_ITEMS_JSON, itemsJson)
                 put(COLUMN_CREATED_AT, System.currentTimeMillis().toString())
             }
+
             val orderId = db.insert(TABLE_ORDERS, null, values)
 
-            // После создания заказа очищаем корзину пользователя
+            Log.d(TAG, "Результат createOrder: orderId=$orderId")
+
             if (orderId != -1L) {
                 clearCart(userId)
             }
 
             orderId
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка создания заказа: ${e.message}")
+            Log.e(TAG, "Ошибка создания заказа: ${e.message}", e)
             -1
         }
     }
@@ -615,32 +670,54 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         try {
             val db = this.readableDatabase
             val query = """
-                SELECT o.*, u.$COLUMN_NAME as user_name, u.$COLUMN_EMAIL as user_email 
-                FROM $TABLE_ORDERS o 
-                LEFT JOIN $TABLE_USERS u ON o.$COLUMN_ORDER_USER_ID = u.$COLUMN_USER_ID 
-                ORDER BY o.$COLUMN_ORDER_ID DESC
-            """.trimIndent()
+            SELECT o.*, 
+                   u.$COLUMN_NAME as user_name, 
+                   u.$COLUMN_EMAIL as user_email,
+                   u.$COLUMN_PHONE as user_phone
+            FROM $TABLE_ORDERS o 
+            LEFT JOIN $TABLE_USERS u ON o.$COLUMN_ORDER_USER_ID = u.$COLUMN_USER_ID 
+            ORDER BY o.$COLUMN_ORDER_ID DESC
+        """.trimIndent()
 
+            Log.d(TAG, "Выполняем запрос getAllOrders")
             val cursor = db.rawQuery(query, null)
+
+            Log.d(TAG, "Найдено заказов: ${cursor.count}")
 
             if (cursor.moveToFirst()) {
                 do {
+                    // Получаем данные из JOIN-запроса
+                    val userName = cursor.getString(cursor.getColumnIndexOrThrow("user_name"))
+                    val userEmail = cursor.getString(cursor.getColumnIndexOrThrow("user_email"))
+                    val userPhone = cursor.getString(cursor.getColumnIndexOrThrow("user_phone"))
+
+                    Log.d(TAG, "Заказ ID=${cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_ID))}, " +
+                            "Пользователь: $userName ($userEmail)")
+
                     val order = Order(
                         id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_ID)),
                         userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_USER_ID)),
-                        userName = cursor.getString(cursor.getColumnIndexOrThrow("user_name")),
-                        userEmail = cursor.getString(cursor.getColumnIndexOrThrow("user_email")),
+                        userName = userName ?: "Неизвестный",
+                        userEmail = userEmail ?: "",
+                        userPhone = userPhone ?: "",
                         totalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_AMOUNT)),
                         status = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS)),
                         createdAt = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CREATED_AT)),
-                        itemsJson = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEMS_JSON))
+                        itemsJson = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEMS_JSON)),
+                        deliveryType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DELIVERY_TYPE)),
+                        paymentType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PAYMENT_TYPE)),
+                        deliveryAddress = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DELIVERY_ADDRESS)),
+                        deliveryPhone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DELIVERY_PHONE)),
+                        comment = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMMENT))
                     )
                     orders.add(order)
                 } while (cursor.moveToNext())
+            } else {
+                Log.d(TAG, "Не найдено заказов в БД")
             }
             cursor.close()
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка загрузки заказов: ${e.message}")
+            Log.e(TAG, "Ошибка загрузки заказов: ${e.message}", e)
         }
         return orders
     }
@@ -649,22 +726,36 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val orders = mutableListOf<Order>()
         try {
             val db = this.readableDatabase
-            val cursor = db.rawQuery(
-                "SELECT * FROM $TABLE_ORDERS WHERE $COLUMN_ORDER_USER_ID = ? ORDER BY $COLUMN_ORDER_ID DESC",
-                arrayOf(userId.toString())
-            )
+            val query = """
+            SELECT o.*, 
+                   u.$COLUMN_NAME as user_name, 
+                   u.$COLUMN_EMAIL as user_email,
+                   u.$COLUMN_PHONE as user_phone
+            FROM $TABLE_ORDERS o 
+            LEFT JOIN $TABLE_USERS u ON o.$COLUMN_ORDER_USER_ID = u.$COLUMN_USER_ID 
+            WHERE o.$COLUMN_ORDER_USER_ID = ? 
+            ORDER BY o.$COLUMN_ORDER_ID DESC
+        """.trimIndent()
+
+            val cursor = db.rawQuery(query, arrayOf(userId.toString()))
 
             if (cursor.moveToFirst()) {
                 do {
                     val order = Order(
                         id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_ID)),
                         userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_USER_ID)),
-                        userName = "",
-                        userEmail = "",
+                        userName = cursor.getString(cursor.getColumnIndexOrThrow("user_name")) ?: "",
+                        userEmail = cursor.getString(cursor.getColumnIndexOrThrow("user_email")) ?: "",
+                        userPhone = cursor.getString(cursor.getColumnIndexOrThrow("user_phone")) ?: "",
                         totalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_AMOUNT)),
                         status = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS)),
                         createdAt = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CREATED_AT)),
-                        itemsJson = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEMS_JSON))
+                        itemsJson = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEMS_JSON)),
+                        deliveryType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DELIVERY_TYPE)),
+                        paymentType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PAYMENT_TYPE)),
+                        deliveryAddress = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DELIVERY_ADDRESS)),
+                        deliveryPhone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DELIVERY_PHONE)),
+                        comment = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMMENT))
                     )
                     orders.add(order)
                 } while (cursor.moveToNext())
@@ -692,29 +783,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun deleteAllOrders(): Boolean {
         return try {
             val db = this.writableDatabase
-            // Получаем количество заказов до удаления
-            val cursorBefore = db.rawQuery("SELECT COUNT(*) FROM $TABLE_ORDERS", null)
-            val countBefore = if (cursorBefore.moveToFirst()) cursorBefore.getInt(0) else 0
-            cursorBefore.close()
-
-            Log.d(TAG, "Удаление всех заказов. Записей до удаления: $countBefore")
-
-            if (countBefore == 0) {
-                Log.d(TAG, "Нет заказов для удаления")
-                return true
-            }
-
-            // Удаляем все записи
             val deletedRows = db.delete(TABLE_ORDERS, null, null)
-            Log.d(TAG, "Удалено записей: $deletedRows")
-
-            // Проверяем результат
-            val cursorAfter = db.rawQuery("SELECT COUNT(*) FROM $TABLE_ORDERS", null)
-            val countAfter = if (cursorAfter.moveToFirst()) cursorAfter.getInt(0) else 0
-            cursorAfter.close()
-
-            Log.d(TAG, "Записей после удаления: $countAfter")
-
+            Log.d(TAG, "Удалено заказов: $deletedRows")
             deletedRows > 0
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка удаления всех заказов: ${e.message}")
@@ -725,40 +795,33 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun deleteUserOrders(userId: Int): Boolean {
         return try {
             val db = this.writableDatabase
-
-            // Получаем количество заказов пользователя до удаления
-            val cursorBefore = db.rawQuery(
-                "SELECT COUNT(*) FROM $TABLE_ORDERS WHERE $COLUMN_ORDER_USER_ID = ?",
-                arrayOf(userId.toString())
-            )
-            val countBefore = if (cursorBefore.moveToFirst()) cursorBefore.getInt(0) else 0
-            cursorBefore.close()
-
-            Log.d(TAG, "Удаление заказов пользователя. userId=$userId, записей до удаления: $countBefore")
-
-            if (countBefore == 0) {
-                Log.d(TAG, "Нет заказов у пользователя для удаления")
-                return true
-            }
-
-            // Удаляем заказы пользователя
             val deletedRows = db.delete(TABLE_ORDERS, "$COLUMN_ORDER_USER_ID = ?", arrayOf(userId.toString()))
-            Log.d(TAG, "Удалено записей пользователя: $deletedRows")
-
-            // Проверяем результат
-            val cursorAfter = db.rawQuery(
-                "SELECT COUNT(*) FROM $TABLE_ORDERS WHERE $COLUMN_ORDER_USER_ID = ?",
-                arrayOf(userId.toString())
-            )
-            val countAfter = if (cursorAfter.moveToFirst()) cursorAfter.getInt(0) else 0
-            cursorAfter.close()
-
-            Log.d(TAG, "Записей пользователя после удаления: $countAfter")
-
+            Log.d(TAG, "Удалено заказов пользователя $userId: $deletedRows")
             deletedRows > 0
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка удаления заказов пользователя: ${e.message}")
             false
+        }
+    }
+
+    // ========== ДИАГНОСТИЧЕСКИЕ МЕТОДЫ ==========
+    fun checkDatabaseStructure() {
+        try {
+            val db = this.readableDatabase
+            Log.d(TAG, "=== ПРОВЕРКА СТРУКТУРЫ БАЗЫ ДАННЫХ (версия $DATABASE_VERSION) ===")
+
+            // Проверяем таблицу orders
+            val cursor = db.rawQuery("PRAGMA table_info($TABLE_ORDERS)", null)
+            Log.d(TAG, "Столбцы таблицы $TABLE_ORDERS:")
+            while (cursor.moveToNext()) {
+                val name = cursor.getString(1)
+                val type = cursor.getString(2)
+                Log.d(TAG, "  $name ($type)")
+            }
+            cursor.close()
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка проверки структуры БД: ${e.message}")
         }
     }
 

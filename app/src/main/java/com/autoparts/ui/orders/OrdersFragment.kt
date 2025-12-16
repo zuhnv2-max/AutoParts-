@@ -131,9 +131,16 @@ class OrdersFragment : Fragment() {
 
     private fun getAllOrders(): List<com.autoparts.data.entity.Order> {
         return try {
-            dbHelper.getAllOrders()
+            val orders = dbHelper.getAllOrders()
+            Log.d("ORDERS_DEBUG", "Получено всех заказов: ${orders.size}")
+            orders.forEach { order ->
+                Log.d("ORDERS_DEBUG", "Заказ ID=${order.id}, " +
+                        "Пользователь: ${order.userName} (${order.userEmail}), " +
+                        "Сумма: ${order.totalAmount}")
+            }
+            orders
         } catch (e: Exception) {
-            Log.e("ORDERS_DEBUG", "Ошибка получения всех заказов: ${e.message}")
+            Log.e("ORDERS_DEBUG", "Ошибка получения всех заказов: ${e.message}", e)
             emptyList()
         }
     }
@@ -279,10 +286,10 @@ class OrdersFragment : Fragment() {
                 details.append("ID пользователя: ${order.userId}\n")
             }
 
-            details.append("\n📅 Дата: ${order.getFormattedDate()}\n")
-            details.append("💰 Сумма: ${String.format("%.2f руб.", order.totalAmount)}\n")
-            details.append("📋 Статус: ${order.getFormattedStatus()}\n\n")
-            details.append("🛒 Товары:\n$itemsText")
+            details.append("\nДата: ${order.getFormattedDate()}\n")
+            details.append("Сумма: ${String.format("%.2f руб.", order.totalAmount)}\n")
+            details.append("Статус: ${order.getFormattedStatus()}\n\n")
+            details.append("Товары:\n$itemsText")
 
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Детали заказа")
