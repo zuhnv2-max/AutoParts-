@@ -110,16 +110,21 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
             // Таблица заказов
             val createOrdersTable = """
-                CREATE TABLE IF NOT EXISTS $TABLE_ORDERS (
-                    $COLUMN_ORDER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                    $COLUMN_ORDER_USER_ID INTEGER NOT NULL,
-                    $COLUMN_TOTAL_AMOUNT REAL NOT NULL,
-                    $COLUMN_STATUS TEXT DEFAULT 'pending',
-                    $COLUMN_CREATED_AT TEXT DEFAULT CURRENT_TIMESTAMP,
-                    $COLUMN_ITEMS_JSON TEXT NOT NULL,
-                    FOREIGN KEY ($COLUMN_ORDER_USER_ID) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
-                )
-            """.trimIndent()
+            CREATE TABLE IF NOT EXISTS $TABLE_ORDERS (
+                $COLUMN_ORDER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_ORDER_USER_ID INTEGER NOT NULL,
+                $COLUMN_TOTAL_AMOUNT REAL NOT NULL,
+                $COLUMN_STATUS TEXT DEFAULT 'pending',
+                $COLUMN_CREATED_AT TEXT DEFAULT CURRENT_TIMESTAMP,
+                $COLUMN_ITEMS_JSON TEXT NOT NULL,
+                delivery_type TEXT DEFAULT 'pickup',
+                payment_type TEXT DEFAULT 'cash',
+                delivery_address TEXT,
+                delivery_phone TEXT,
+                comment TEXT,
+                FOREIGN KEY ($COLUMN_ORDER_USER_ID) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
+            )
+        """.trimIndent()
 
             // Таблица корзины
             val createCartTable = """
