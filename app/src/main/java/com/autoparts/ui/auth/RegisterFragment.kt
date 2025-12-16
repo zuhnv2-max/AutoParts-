@@ -12,6 +12,10 @@ import androidx.navigation.fragment.findNavController
 import com.autoparts.R
 import com.autoparts.data.database.DatabaseHelper
 import com.autoparts.databinding.FragmentRegisterBinding
+import android.telephony.PhoneNumberFormattingTextWatcher
+import android.text.InputFilter
+import android.content.res.ColorStateList
+import android.graphics.Color
 
 class RegisterFragment : Fragment() {
 
@@ -45,91 +49,71 @@ class RegisterFragment : Fragment() {
         }
     }
 
+
+
     private fun setupPhoneMask() {
+        // Используем стандартный форматтер телефона для России
+        val watcher = PhoneNumberFormattingTextWatcher("RU")
+        binding.editTextPhone.addTextChangedListener(watcher)
+
+        // Устанавливаем начальное значение +7
+        binding.editTextPhone.setText("+7")
+        binding.editTextPhone.setSelection(2)
+
+        // Добавляем фильтр для ограничения длины
+        binding.editTextPhone.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(18)) // +7 + 10 цифр
+
+        // Добавляем валидацию и защиту от удаления +7
         binding.editTextPhone.addTextChangedListener(object : TextWatcher {
             private var isFormatting = false
-            private var deletingHyphen = false
-            private var hyphenStart = 0
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (s != null && start < s.length && s[start] == ' ') {
-                    deletingHyphen = true
-                    hyphenStart = start
-                } else {
-                    deletingHyphen = false
-                }
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Не используется
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
                 if (isFormatting) return
 
                 isFormatting = true
+                val text = s?.toString() ?: ""
 
-                if (deletingHyphen && hyphenStart < s?.length ?: 0) {
-                    s?.delete(hyphenStart, hyphenStart + 1)
+                // Удаляем все нецифровые символы, кроме +
+                val digitsOnly = text.replace(Regex("[^\\d+]"), "")
+
+                // Если текст не начинается с +7, исправляем это
+                if (!digitsOnly.startsWith("+7")) {
+                    val cleanText = digitsOnly.replace("+", "").replace("7", "")
+                    val newText = "+7$cleanText"
+                    binding.editTextPhone.removeTextChangedListener(this)
+                    binding.editTextPhone.setText(newText)
+                    binding.editTextPhone.setSelection(Math.min(newText.length, 12))
+                    binding.editTextPhone.addTextChangedListener(this)
+                }
+                // Если введено слишком много цифр, обрезаем
+                else if (digitsOnly.length > 12) {
+                    val trimmedText = digitsOnly.substring(0, 12)
+                    binding.editTextPhone.removeTextChangedListener(this)
+                    binding.editTextPhone.setText(trimmedText)
+                    binding.editTextPhone.setSelection(trimmedText.length)
+                    binding.editTextPhone.addTextChangedListener(this)
                 }
 
-                val phone = s?.toString() ?: ""
-                val cleanPhone = phone.replace(Regex("[^0-9+]"), "")
-
-                if (cleanPhone.length <= 1) {
-                    // Если только +7 или пусто
-                    if (!phone.startsWith("+7")) {
-                        s?.replace(0, s.length, "+7")
-                    }
-                } else if (cleanPhone.length <= 4) {
-                    // Формат: +7 (XXX)
-                    val formatted = StringBuilder("+7")
-                    if (cleanPhone.length > 2) {
-                        formatted.append(" (")
-                        formatted.append(cleanPhone.substring(2))
-                    }
-                    s?.replace(0, s.length, formatted.toString())
-                } else if (cleanPhone.length <= 7) {
-                    // Формат: +7 (XXX) XXX
-                    val formatted = StringBuilder("+7 (")
-                    formatted.append(cleanPhone.substring(2, 5))
-                    formatted.append(") ")
-                    if (cleanPhone.length > 5) {
-                        formatted.append(cleanPhone.substring(5))
-                    }
-                    s?.replace(0, s.length, formatted.toString())
-                } else if (cleanPhone.length <= 9) {
-                    // Формат: +7 (XXX) XXX-XX
-                    val formatted = StringBuilder("+7 (")
-                    formatted.append(cleanPhone.substring(2, 5))
-                    formatted.append(") ")
-                    formatted.append(cleanPhone.substring(5, 8))
-                    formatted.append("-")
-                    if (cleanPhone.length > 8) {
-                        formatted.append(cleanPhone.substring(8))
-                    }
-                    s?.replace(0, s.length, formatted.toString())
-                } else {
-                    // Полный формат: +7 (XXX) XXX-XX-XX
-                    val formatted = StringBuilder("+7 (")
-                    formatted.append(cleanPhone.substring(2, 5))
-                    formatted.append(") ")
-                    formatted.append(cleanPhone.substring(5, 8))
-                    formatted.append("-")
-                    formatted.append(cleanPhone.substring(8, 10))
-                    if (cleanPhone.length > 10) {
-                        formatted.append("-")
-                        formatted.append(cleanPhone.substring(10, 12))
-                    }
-                    s?.replace(0, s.length, formatted.toString())
-                }
-
-                // Устанавливаем курсор в конец
-                binding.editTextPhone.setSelection(s?.length ?: 0)
+                // Можно добавить визуальную обратную связь
+                updatePhoneValidationStatus(text)
 
                 isFormatting = false
             }
         })
+    }
+
+    private fun updatePhoneValidationStatus(phoneText: String) {
+        // Удаляем форматирование и проверяем длину
+        val cleanDigits = phoneText.replace(Regex("[^\\d]"), "")
+        val isValid = cleanDigits.length == 11 && cleanDigits.startsWith("7") // 7 + 10 цифр
+
+        // Меняем цвет рамки или показываем подсказку
+        binding.editTextPhone.backgroundTintList = ColorStateList.valueOf(
+            if (isValid) Color.GREEN else Color.RED
+        )
     }
 
     private fun performRegistration() {
