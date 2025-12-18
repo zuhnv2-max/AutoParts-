@@ -60,19 +60,7 @@ class CatalogFragment : Fragment() {
     }
 
     private fun setupSearchListeners() {
-        // Поиск (если будет реализован позже)
-        binding.searchInput.setOnEditorActionListener { v, actionId, event ->
-            // Обработка поиска
-            false
-        }
-
-        binding.clearSearchButton.setOnClickListener {
-            binding.searchInput.text.clear()
-            binding.clearSearchButton.visibility = View.GONE
-            loadProducts() // Загружаем все товары
-        }
-
-        // Показываем кнопку очистки при вводе текста
+        // Обработка поиска по мере ввода текста
         binding.searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Не используется
@@ -83,10 +71,6 @@ class CatalogFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                binding.clearSearchButton.visibility =
-                    if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
-
-                // Если поиск не пустой, выполняем поиск
                 val query = s?.toString()?.trim()
                 if (!query.isNullOrEmpty()) {
                     searchProducts(query)

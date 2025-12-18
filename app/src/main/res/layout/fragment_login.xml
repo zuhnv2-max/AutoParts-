@@ -67,13 +67,11 @@
     <!-- Кнопка входа -->
     <Button
         android:id="@+id/buttonLogin"
+        style="@style/AppButton.Primary"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="ВОЙТИ"
+        android:layout_height="@dimen/button_height_large"
+        android:text="Войти"
         android:textSize="16sp"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        android:background="@color/primary_blue"
         android:layout_marginBottom="16dp" />
 
     <!-- Ссылка на регистрацию -->

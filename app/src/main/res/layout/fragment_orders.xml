@@ -3,33 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/background_light">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_medium">
 
-        <!-- Заголовок -->
-        <TextView
+        <!-- Заголовок в карточке -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Мои заказы"
-            android:textColor="#212121"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_medium"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardElevation="@dimen/elevation_low"
+            app:cardBackgroundColor="@color/primary_blue">
 
-        <!-- Статистика -->
-        <TextView
-            android:id="@+id/ordersStats"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Заказов: 0 • Потрачено: 0 руб."
-            android:textColor="#757575"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_medium">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Мои заказы"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <!-- Статистика -->
+                <TextView
+                    android:id="@+id/ordersStats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:text="Заказов: 0 • Потрачено: 0 руб."
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:alpha="0.9" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <!-- Состояние пустого списка -->
         <LinearLayout
@@ -44,14 +62,14 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginBottom="16dp"
-                android:src="@android:drawable/ic_menu_recent_history" />
+                android:src="@drawable/ic_empty_search" />
 
             <TextView
                 android:id="@+id/emptyStateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="У вас пока нет заказов"
-                android:textColor="#757575"
+                android:textColor="@color/text_secondary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -60,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Совершите покупку в нашем каталоге"
-                android:textColor="#9E9E9E"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -74,14 +92,12 @@
 
         <Button
             android:id="@+id/clearOrdersButton"
+            style="@style/AppButton.Danger"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
-            android:text="Очистить историю заказов"
-            android:backgroundTint="#FF5252"
-            android:textColor="#FFFFFF"
-            style="@style/AppButton" />
+            android:layout_height="@dimen/button_height_medium"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:text="Очистить историю заказов" />
 
     </LinearLayout>
 

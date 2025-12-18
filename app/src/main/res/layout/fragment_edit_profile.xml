@@ -3,33 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/background_light">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="@dimen/spacing_large">
 
-        <!-- Заголовок -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Заголовок в карточке -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Редактирование профиля"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/purple_500"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="@dimen/spacing_large"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardElevation="@dimen/elevation_low"
+            app:cardBackgroundColor="@color/primary_blue">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_medium"
+                android:text="Редактирование профиля"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+
+        </androidx.cardview.widget.CardView>
 
         <!-- Email -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_medium"
             android:hint="Email"
-            app:boxStrokeColor="@color/purple_500"
-            app:hintTextColor="@color/purple_500">
+            app:boxStrokeColor="@color/primary_blue"
+            app:hintTextColor="@color/primary_blue"
+            app:startIconDrawable="@drawable/ic_email"
+            app:startIconTint="@color/primary_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextEmail"
@@ -44,10 +56,12 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_medium"
             android:hint="Телефон"
-            app:boxStrokeColor="@color/purple_500"
-            app:hintTextColor="@color/purple_500">
+            app:boxStrokeColor="@color/primary_blue"
+            app:hintTextColor="@color/primary_blue"
+            app:startIconDrawable="@drawable/ic_phone"
+            app:startIconTint="@color/primary_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPhone"
@@ -62,10 +76,12 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="@dimen/spacing_large"
             android:hint="Имя"
-            app:boxStrokeColor="@color/purple_500"
-            app:hintTextColor="@color/purple_500">
+            app:boxStrokeColor="@color/primary_blue"
+            app:hintTextColor="@color/primary_blue"
+            app:startIconDrawable="@drawable/ic_person"
+            app:startIconTint="@color/primary_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextName"
@@ -76,24 +92,35 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Раздел смены пароля -->
-        <TextView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Смена пароля (заполните только если хотите изменить)"
-            android:textSize="14sp"
-            android:textStyle="italic"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="@dimen/spacing_medium"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardElevation="@dimen/elevation_low"
+            app:cardBackgroundColor="@color/primary_blue_light">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_medium"
+                android:text="Смена пароля (заполните только если хотите изменить)"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                android:textColor="@color/text_secondary" />
+
+        </androidx.cardview.widget.CardView>
 
         <!-- Текущий пароль -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_medium"
             android:hint="Текущий пароль"
-            app:boxStrokeColor="@color/purple_500"
-            app:hintTextColor="@color/purple_500">
+            app:boxStrokeColor="@color/primary_blue"
+            app:hintTextColor="@color/primary_blue"
+            app:startIconTint="@color/primary_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextCurrentPassword"
@@ -108,10 +135,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_medium"
             android:hint="Новый пароль"
-            app:boxStrokeColor="@color/purple_500"
-            app:hintTextColor="@color/purple_500">
+            app:boxStrokeColor="@color/primary_blue"
+            app:hintTextColor="@color/primary_blue"
+            app:startIconTint="@color/primary_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextNewPassword"
@@ -126,10 +154,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/spacing_large"
             android:hint="Подтвердите новый пароль"
-            app:boxStrokeColor="@color/purple_500"
-            app:hintTextColor="@color/purple_500">
+            app:boxStrokeColor="@color/primary_blue"
+            app:hintTextColor="@color/primary_blue"
+            app:startIconTint="@color/primary_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextConfirmPassword"
@@ -147,29 +176,21 @@
 
             <Button
                 android:id="@+id/buttonCancel"
+                style="@style/AppButton.Danger"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/button_height_large"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="ОТМЕНА"
-                android:textSize="14sp"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                android:background="@android:drawable/editbox_background"
-                android:gravity="center" />
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:text="Отмена" />
 
             <Button
                 android:id="@+id/buttonSave"
+                style="@style/AppButton.Primary"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/button_height_large"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="СОХРАНИТЬ"
-                android:textSize="14sp"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                android:background="@android:drawable/editbox_background"
-                android:gravity="center" />
+                android:layout_marginStart="@dimen/spacing_small"
+                android:text="Сохранить" />
 
         </LinearLayout>
 

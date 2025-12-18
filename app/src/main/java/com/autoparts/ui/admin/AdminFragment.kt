@@ -1,5 +1,6 @@
 package com.autoparts.ui.admin
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.autoparts.AuthActivity
 import com.autoparts.R
+import com.autoparts.SessionManager
 import com.autoparts.data.database.DatabaseHelper
 import com.autoparts.data.entity.Product
 import com.autoparts.databinding.FragmentAdminSimpleBinding
@@ -21,6 +24,7 @@ class AdminFragment : Fragment() {
     private lateinit var productAdapter: AdminProductAdapter
     private lateinit var dbHelper: DatabaseHelper
     private val productList = mutableListOf<Product>()
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +40,7 @@ class AdminFragment : Fragment() {
 
         try {
             dbHelper = DatabaseHelper(requireContext())
+            sessionManager = SessionManager(requireContext())
             setupRecyclerView()
             loadProductsFromDatabase()
             setupClickListeners()
@@ -86,6 +91,28 @@ class AdminFragment : Fragment() {
         binding.buttonClearAll.setOnClickListener {
             showClearAllConfirmationDialog()
         }
+
+        binding.buttonLogoutAdmin.setOnClickListener {
+            showLogoutConfirmation()
+        }
+    }
+
+    private fun showLogoutConfirmation() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Выход из системы")
+            .setMessage("Вы уверены, что хотите выйти из аккаунта администратора?")
+            .setPositiveButton("Выйти") { _, _ ->
+                sessionManager.logout()
+
+                val intent = Intent(requireContext(), AuthActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                startActivity(intent)
+
+                Toast.makeText(requireContext(), "Вы вышли из системы", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
     }
 
     private fun showAddProductDialog() {

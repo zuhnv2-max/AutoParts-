@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/background_light"
     android:padding="24dp">
 
     <LinearLayout
@@ -14,8 +14,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardCornerRadius="@dimen/corner_radius_large"
+            app:cardElevation="@dimen/elevation_medium">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Имя пользователя"
-                    android:textColor="#212121"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -47,7 +47,7 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:text="email@example.com"
-                    android:textColor="#757575"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
                 <TextView
@@ -57,7 +57,7 @@
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:text="+7 (999) 123-4567"
-                    android:textColor="#757575"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -66,22 +66,20 @@
 
         <Button
             android:id="@+id/editProfileButton"
+            style="@style/AppButton.Primary"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/button_height_large"
             android:layout_marginTop="24dp"
-            android:backgroundTint="#673AB7"
             android:text="Редактировать профиль"
-            android:textColor="#FFFFFF"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/logoutButton"
+            style="@style/AppButton.Danger"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/button_height_large"
             android:layout_marginTop="16dp"
-            android:backgroundTint="#FF5252"
             android:text="Выйти"
-            android:textColor="#FFFFFF"
             android:textSize="16sp" />
 
     </LinearLayout>

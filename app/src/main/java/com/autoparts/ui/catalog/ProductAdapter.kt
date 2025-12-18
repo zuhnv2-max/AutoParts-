@@ -21,6 +21,7 @@ class ProductAdapter(
         val productName: TextView = itemView.findViewById(R.id.productName)
         val productBrand: TextView = itemView.findViewById(R.id.productBrand)
         val productArticle: TextView = itemView.findViewById(R.id.productArticle)
+        val productCategory: TextView = itemView.findViewById(R.id.productCategory)
         val productPrice: TextView = itemView.findViewById(R.id.productPrice)
         val addToCartButton: Button = itemView.findViewById(R.id.addToCartButton)
     }
@@ -38,6 +39,15 @@ class ProductAdapter(
         holder.productName.text = product.productsName
         holder.productBrand.text = product.brand
         holder.productArticle.text = "Арт: ${product.article}"
+        
+        // Категория
+        if (product.category.isNotEmpty()) {
+            holder.productCategory.text = product.category
+            holder.productCategory.visibility = View.VISIBLE
+        } else {
+            holder.productCategory.visibility = View.GONE
+        }
+        
         holder.productPrice.text = "${product.price.toInt()} руб."
 
         // Кнопка добавления в корзину

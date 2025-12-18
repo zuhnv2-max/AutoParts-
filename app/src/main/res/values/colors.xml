@@ -74,9 +74,10 @@
     <color name="gradient_start">#2D5BE3</color>
     <color name="gradient_end">#1A47C4</color>
 
-        <color name="primary">#673AB7</color>
-        <color name="primary_dark">#512DA8</color>
-        <color name="accent">#4CAF50</color>
+        <!-- Backward-compatible aliases for primary/accent -->
+        <color name="primary">#2D5BE3</color>
+        <color name="primary_dark">#1A47C4</color>
+        <color name="accent">#34C759</color>
 
 </resources>
 

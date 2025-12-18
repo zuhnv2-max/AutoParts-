@@ -4,44 +4,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="@dimen/spacing_medium"
+    android:background="@color/background_light">
 
     <!-- Поиск -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp">
+        android:layout_marginBottom="@dimen/spacing_medium"
+        app:cardCornerRadius="@dimen/corner_radius_large"
+        app:cardElevation="@dimen/elevation_low">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            android:gravity="center_vertical">
+            android:hint="Поиск по каталогу"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_large"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_large"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_large"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_large"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/gray_600">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/searchInput"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Поиск по каталогу..."
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
-                android:padding="12dp" />
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint" />
 
-            <ImageButton
-                android:id="@+id/clearSearchButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:visibility="gone" />
-
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.cardview.widget.CardView>
 
@@ -58,6 +54,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/spacing_large"
+        android:clipToPadding="false" />
 
 </LinearLayout>

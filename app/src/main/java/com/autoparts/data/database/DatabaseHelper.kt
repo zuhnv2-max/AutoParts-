@@ -14,7 +14,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     companion object {
         private const val TAG = "DatabaseHelper"
         private const val DATABASE_NAME = "autoparts.db"
-        private const val DATABASE_VERSION = 6  // Увеличиваем версию для добавления полей доставки
+        private const val DATABASE_VERSION = 8  // Увеличиваем версию для добавления новых товаров
 
         // Таблица пользователей
         private const val TABLE_USERS = "users"
@@ -24,6 +24,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_PASSWORD = "password"
         private const val COLUMN_NAME = "name"
         private const val COLUMN_ROLE = "role"
+        private const val COLUMN_USER_ADDRESS = "address"
+        private const val COLUMN_USER_CREATED_AT = "created_at"
+        private const val COLUMN_USER_LAST_LOGIN = "last_login_at"
+        private const val COLUMN_USER_AVATAR = "avatar_url"
 
         // Таблица товаров
         private const val TABLE_PRODUCTS = "products"
@@ -37,6 +41,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_IMAGE_URL = "imageUrl"
         private const val COLUMN_VIN_NUMBERS = "vinNumbers"
         private const val COLUMN_COMPATIBLE_CARS = "compatibleCars"
+        private const val COLUMN_STOCK = "stock"
+        private const val COLUMN_WARRANTY = "warranty"
+        private const val COLUMN_COUNTRY = "country"
+        private const val COLUMN_WEIGHT = "weight"
+        private const val COLUMN_DIMENSIONS = "dimensions"
+        private const val COLUMN_RATING = "rating"
+        private const val COLUMN_REVIEWS_COUNT = "reviews_count"
+        private const val COLUMN_PRODUCT_CREATED_AT = "created_at"
 
         // Таблица заказов
         private const val TABLE_ORDERS = "orders"
@@ -106,7 +118,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             }
         }
 
-        // Для других версий можно добавить аналогичные проверки
+        // Обновление до версии 8: добавляем новые товары в каталог
+        if (oldVersion < 8) {
+            try {
+                Log.d(TAG, "Обновление до версии 8: добавление новых товаров")
+                
+                // Очищаем старые товары и добавляем все новые
+                db.execSQL("DELETE FROM $TABLE_PRODUCTS")
+                Log.d(TAG, "Старые товары удалены")
+                
+                // Добавляем все новые товары
+                insertProductsData(db)
+                Log.d(TAG, "Новые товары успешно добавлены")
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "Ошибка обновления товаров: ${e.message}", e)
+            }
+        }
     }
 
     private fun dropAllTables(db: SQLiteDatabase) {
@@ -848,18 +876,84 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             }
             db.insert(TABLE_USERS, null, userValues)
 
-            // Тестовые товары
+            // Добавляем товары
+            insertProductsData(db)
+
+            Log.d(TAG, "Начальные данные успешно добавлены")
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при инициализации данных: ${e.message}")
+        }
+    }
+
+    private fun insertProductsData(db: SQLiteDatabase) {
+        try {
+            // Тестовые товары - расширенный список автозапчастей
             val testProducts = listOf(
+                // Фильтры
                 Product(0, "Масляный фильтр Mann", "MF-001", "Mann-Filter", 850.0, "Масляный фильтр для двигателей TSI/VW/Audi", "Фильтры", "", "03C115561B,03C115561,03C115561H", "VW Golf, Audi A3, Skoda Octavia"),
                 Product(0, "Воздушный фильтр Bosch", "AF-002", "Bosch", 1200.0, "Воздушный фильтр салона с угольным элементом", "Фильтры", "", "1K0819653,1K0819653A,1K0819653B", "VW Polo, Skoda Rapid, Seat Ibiza"),
+                Product(0, "Топливный фильтр Mahle", "FF-011", "Mahle", 950.0, "Топливный фильтр тонкой очистки", "Фильтры", "", "1K0201511,1K0201511A", "VW Golf, Passat, Jetta"),
+                Product(0, "Салонный фильтр Valeo", "CF-012", "Valeo", 650.0, "Фильтр салона с активированным углем", "Фильтры", "", "1K0819653C,1K0819653D", "VW Polo, Skoda Fabia"),
+                
+                // Тормозная система
                 Product(0, "Тормозные колодки Brembo", "BK-003", "Brembo", 4500.0, "Передние тормозные колодки дисковые", "Тормозная система", "", "8V0615101,8V0615101A,8V0615101B", "Audi A4, VW Passat, Skoda Superb"),
+                Product(0, "Тормозные диски TRW", "BD-013", "TRW", 6800.0, "Передние тормозные диски вентилируемые", "Тормозная система", "", "1K0615301,1K0615301A", "VW Golf, Audi A3"),
+                Product(0, "Тормозная жидкость DOT4", "BF-014", "Bosch", 450.0, "Тормозная жидкость DOT4 1л", "Тормозная система", "", "Универсальная", "Все модели"),
+                Product(0, "Тормозной шланг ATE", "BH-015", "ATE", 1200.0, "Передний тормозной шланг", "Тормозная система", "", "1K0611701,1K0611701A", "VW Polo, Skoda Fabia"),
+                
+                // Система зажигания
                 Product(0, "Свеча зажигания NGK", "SP-004", "NGK", 350.0, "Иридиевая свеча зажигания", "Система зажигания", "", "06H905611,06H905611A,06H905611B", "VW Tiguan, Skoda Kodiaq, Audi Q3"),
+                Product(0, "Катушка зажигания Bosch", "IC-016", "Bosch", 3200.0, "Катушка зажигания индивидуальная", "Система зажигания", "", "06H905115,06H905115A", "VW Golf, Passat"),
+                Product(0, "Свеча накаливания Beru", "GP-017", "Beru", 850.0, "Свеча накаливания для дизеля", "Система зажигания", "", "N10591607,N10591607A", "VW Golf, Passat TDI"),
+                
+                // Электрика
                 Product(0, "Аккумулятор Varta", "BAT-005", "Varta", 8500.0, "Свинцово-кислотный аккумулятор 60Ач", "Электрика", "", "000915105AC,000915105AD,000915105AE", "Все модели VAG"),
+                Product(0, "Генератор Bosch", "GEN-010", "Bosch", 18500.0, "Генератор 140А с регулятором напряжения", "Электрика", "", "03C903023,03C903023A,03C903023B", "Audi Q5, VW Touareg, Porsche Cayenne"),
+                Product(0, "Стартер Valeo", "ST-018", "Valeo", 12500.0, "Стартер редукторный 1.4кВт", "Электрика", "", "02T911023,02T911023A", "VW Golf, Passat"),
+                Product(0, "Лампа H7 Osram", "BL-019", "Osram", 450.0, "Галогенная лампа H7 55W", "Электрика", "", "Универсальная", "Все модели"),
+                Product(0, "Датчик кислорода Bosch", "O2-020", "Bosch", 3200.0, "Лямбда-зонд передний", "Электрика", "", "0258017025,0258017025A", "VW Golf, Passat, Audi A4"),
+                
+                // Ходовая часть
                 Product(0, "ШРУС Lemforder", "CV-006", "Lemforder", 5200.0, "Наружный ШРУС с пыльником", "Ходовая часть", "", "1K0407271,1K0407271A,1K0407271B", "VW Golf, Audi A3, Seat Leon"),
-                Product(0, "Сцепление LUK", "CL-007", "LUK", 12500.0, "Комплект сцепления (корзина+диск+выжимной)", "Трансмиссия", "", "02T141033,02T141033A,02T141033B", "VW Jetta, Skoda Octavia, Audi A4"),
-                Product(0, "Ремень ГРМ Contitech", "TB-008", "Contitech", 3200.0, "Ремень ГРМ с роликами", "Двигатель", "", "06B109119,06B109119A,06B109119B", "VW Passat, Audi A6, Skoda Superb"),
                 Product(0, "Амортизатор Sachs", "SH-009", "Sachs", 6800.0, "Передний амортизатор газомасляный", "Ходовая часть", "", "1K0413031,1K0413031A,1K0413031B", "VW Polo, Skoda Fabia, Seat Ibiza"),
-                Product(0, "Генератор Bosch", "GEN-010", "Bosch", 18500.0, "Генератор 140А с регулятором напряжения", "Электрика", "", "03C903023,03C903023A,03C903023B", "Audi Q5, VW Touareg, Porsche Cayenne")
+                Product(0, "Стойка стабилизатора TRW", "SS-021", "TRW", 1200.0, "Стойка стабилизатора передняя", "Ходовая часть", "", "1K0411315,1K0411315A", "VW Golf, Passat"),
+                Product(0, "Рычаг подвески Lemforder", "CA-022", "Lemforder", 4500.0, "Передний нижний рычаг", "Ходовая часть", "", "1K0407151,1K0407151A", "VW Golf, Audi A3"),
+                Product(0, "Подшипник ступицы FAG", "HB-023", "FAG", 3200.0, "Подшипник ступицы передний", "Ходовая часть", "", "1K0407621,1K0407621A", "VW Golf, Passat"),
+                Product(0, "Пыльник ШРУС Corteco", "CVB-024", "Corteco", 650.0, "Пыльник наружного ШРУС", "Ходовая часть", "", "1K0498101,1K0498101A", "VW Golf, Audi A3"),
+                
+                // Трансмиссия
+                Product(0, "Сцепление LUK", "CL-007", "LUK", 12500.0, "Комплект сцепления (корзина+диск+выжимной)", "Трансмиссия", "", "02T141033,02T141033A,02T141033B", "VW Jetta, Skoda Octavia, Audi A4"),
+                Product(0, "Масло трансмиссионное Motul", "TM-025", "Motul", 1200.0, "Масло трансмиссионное 75W-90 1л", "Трансмиссия", "", "Универсальное", "Все модели"),
+                Product(0, "Подшипник выжимной Valeo", "TB-026", "Valeo", 1800.0, "Выжимной подшипник сцепления", "Трансмиссия", "", "02T141165,02T141165A", "VW Golf, Passat"),
+                
+                // Двигатель
+                Product(0, "Ремень ГРМ Contitech", "TB-008", "Contitech", 3200.0, "Ремень ГРМ с роликами", "Двигатель", "", "06B109119,06B109119A,06B109119B", "VW Passat, Audi A6, Skoda Superb"),
+                Product(0, "Ролик натяжителя ГРМ INA", "TB-027", "INA", 2500.0, "Ролик натяжителя ремня ГРМ", "Двигатель", "", "06B109244,06B109244A", "VW Passat, Audi A6"),
+                Product(0, "Помпа водяная Gates", "WP-028", "Gates", 4500.0, "Водяной насос с прокладкой", "Двигатель", "", "06H121026,06H121026A", "VW Golf, Passat TSI"),
+                Product(0, "Термостат Wahler", "TH-029", "Wahler", 1800.0, "Термостат двигателя 87°C", "Двигатель", "", "06H121113,06H121113A", "VW Golf, Passat"),
+                Product(0, "Ремень приводной Gates", "AB-030", "Gates", 1200.0, "Ремень привода навесного оборудования", "Двигатель", "", "6PK1193,6PK1195", "VW Golf, Passat"),
+                Product(0, "Масло моторное Castrol", "EO-031", "Castrol", 1800.0, "Моторное масло 5W-30 4л", "Двигатель", "", "Универсальное", "Все модели"),
+                Product(0, "Прокладка ГБЦ Elring", "HG-032", "Elring", 3200.0, "Прокладка головки блока цилиндров", "Двигатель", "", "06H103383,06H103383A", "VW Golf, Passat 1.8T"),
+                
+                // Система охлаждения
+                Product(0, "Радиатор охлаждения Nissens", "RAD-033", "Nissens", 8500.0, "Радиатор системы охлаждения", "Система охлаждения", "", "7M0121251,7M0121251A", "VW Golf, Passat"),
+                Product(0, "Расширительный бачок Febi", "ET-034", "Febi", 1200.0, "Бачок расширительный с крышкой", "Система охлаждения", "", "1K0121407,1K0121407A", "VW Golf, Polo"),
+                Product(0, "Патрубок охлаждения Gates", "CH-035", "Gates", 650.0, "Патрубок системы охлаждения верхний", "Система охлаждения", "", "1K0121107,1K0121107A", "VW Golf, Passat"),
+                
+                // Кузов и оптика
+                Product(0, "Фара передняя Hella", "HL-036", "Hella", 12500.0, "Фара передняя левая с линзой", "Кузов", "", "1K1941001,1K1941001A", "VW Golf"),
+                Product(0, "Бампер передний", "BP-037", "OEM", 18500.0, "Бампер передний в цвет кузова", "Кузов", "", "1K0807211,1K0807211A", "VW Golf"),
+                Product(0, "Зеркало боковое Valeo", "SM-038", "Valeo", 3200.0, "Зеркало боковое левое с подогревом", "Кузов", "", "1K1857521,1K1857521A", "VW Golf, Passat"),
+                
+                // Салон
+                Product(0, "Коврик салона WeatherTech", "FM-039", "WeatherTech", 2500.0, "Комплект ковриков салона 4шт", "Салон", "", "Универсальный", "VW Golf, Passat"),
+                Product(0, "Чехол на сиденье", "SC-040", "OEM", 3200.0, "Чехол на переднее сиденье", "Салон", "", "Универсальный", "Все модели"),
+                
+                // Дополнительно
+                Product(0, "Дворник передний Bosch", "WB-041", "Bosch", 850.0, "Дворник передний 26\"", "Дополнительно", "", "AER26T", "Универсальный"),
+                Product(0, "Щетка стеклоочистителя Valeo", "WB-042", "Valeo", 650.0, "Щетка стеклоочистителя задняя", "Дополнительно", "", "SWF-350", "Универсальная"),
+                Product(0, "Антенна Hirschmann", "ANT-043", "Hirschmann", 1200.0, "Антенна наружная магнитная", "Дополнительно", "", "Универсальная", "Все модели")
             )
 
             testProducts.forEach { product ->
@@ -877,10 +971,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 db.insert(TABLE_PRODUCTS, null, values)
             }
 
-            Log.d(TAG, "Начальные данные успешно добавлены")
+            Log.d(TAG, "Товары успешно добавлены: ${testProducts.size} шт.")
 
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при инициализации данных: ${e.message}")
+            Log.e(TAG, "Ошибка при добавлении товаров: ${e.message}")
         }
     }
 }

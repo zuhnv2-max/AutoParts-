@@ -1,6 +1,8 @@
 package com.autoparts.ui.cart
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.autoparts.R
 import com.autoparts.MainActivity
 import com.autoparts.SessionManager
@@ -191,11 +194,15 @@ class CartFragment : Fragment() {
         // Находим элементы
         val deliveryGroup = dialogView.findViewById<RadioGroup>(R.id.deliveryGroup)
         val paymentGroup = dialogView.findViewById<RadioGroup>(R.id.paymentGroup)
-        val addressInput = dialogView.findViewById<EditText>(R.id.addressInput)
-        val phoneInput = dialogView.findViewById<EditText>(R.id.phoneInput)
-        val commentInput = dialogView.findViewById<EditText>(R.id.commentInput)
-        val pickupAddressContainer = dialogView.findViewById<LinearLayout>(R.id.pickupAddressContainer)
-        val deliveryAddressContainer = dialogView.findViewById<LinearLayout>(R.id.deliveryAddressContainer)
+        val addressInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.addressInput)
+        val phoneInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.phoneInput)
+        val pickupAddressContainer = dialogView.findViewById<androidx.cardview.widget.CardView>(R.id.pickupAddressContainer)
+        val deliveryAddressContainer = dialogView.findViewById<androidx.cardview.widget.CardView>(R.id.deliveryAddressContainer)
+        val cardPaymentContainer = dialogView.findViewById<androidx.cardview.widget.CardView>(R.id.cardPaymentContainer)
+        val cardNumberInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.cardNumberInput)
+        val cardNameInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.cardNameInput)
+        val cardExpiryInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.cardExpiryInput)
+        val cardCvvInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.cardCvvInput)
 
         // Устанавливаем телефон пользователя по умолчанию
         val userPhone = sessionManager.getUserPhone()
@@ -211,14 +218,64 @@ class CartFragment : Fragment() {
                 // Показываем поле для ввода адреса доставки
                 pickupAddressContainer.visibility = View.GONE
                 deliveryAddressContainer.visibility = View.VISIBLE
-                addressInput.setText("") // Очищаем поле
+                addressInput?.setText("") // Очищаем поле
             } else {
                 // Показываем адрес магазина для самовывоза
                 pickupAddressContainer.visibility = View.VISIBLE
                 deliveryAddressContainer.visibility = View.GONE
-                addressInput.setText("Самовывоз") // Устанавливаем значение по умолчанию
             }
         }
+
+        // Обработчик изменения способа оплаты
+        paymentGroup.setOnCheckedChangeListener { group, checkedId ->
+            val isOnlinePayment = checkedId == R.id.radioOnline
+
+            if (isOnlinePayment) {
+                // Показываем поля для ввода данных карты
+                cardPaymentContainer.visibility = View.VISIBLE
+            } else {
+                // Скрываем поля для ввода данных карты
+                cardPaymentContainer.visibility = View.GONE
+            }
+        }
+
+        // Форматирование номера карты (добавление пробелов каждые 4 цифры)
+        cardNumberInput?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val text = s?.toString()?.replace(" ", "") ?: ""
+                if (text.length <= 16) {
+                    val formatted = text.chunked(4).joinToString(" ")
+                    if (formatted != s.toString()) {
+                        val cursorPos = cardNumberInput?.selectionStart ?: 0
+                        cardNumberInput?.setText(formatted)
+                        val newPos = if (cursorPos < formatted.length) cursorPos + 1 else formatted.length
+                        cardNumberInput?.setSelection(newPos)
+                    }
+                }
+            }
+        })
+
+        // Форматирование срока действия карты (ММ/ГГ)
+        cardExpiryInput?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val text = s?.toString()?.replace("/", "") ?: ""
+                if (text.length <= 4) {
+                    val formatted = if (text.length >= 2) {
+                        "${text.substring(0, 2)}/${text.substring(2)}"
+                    } else {
+                        text
+                    }
+                    if (formatted != s.toString()) {
+                        cardExpiryInput?.setText(formatted)
+                        cardExpiryInput?.setSelection(formatted.length)
+                    }
+                }
+            }
+        })
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Оформление заказа")
@@ -238,12 +295,11 @@ class CartFragment : Fragment() {
                     else -> "cash"
                 }
 
-                val phone = phoneInput.text.toString().trim()
-                val comment = commentInput.text.toString().trim()
+                val phone = phoneInput?.text?.toString()?.trim() ?: ""
 
                 // Получаем адрес в зависимости от типа доставки
                 val address = if (deliveryType == "delivery") {
-                    addressInput.text.toString().trim()
+                    addressInput?.text?.toString()?.trim() ?: ""
                 } else {
                     // Адрес магазина для самовывоза
                     "Самовывоз: ул. Автозапчастей, д. 15, Москва (ежедневно 9:00-21:00)"
@@ -260,8 +316,36 @@ class CartFragment : Fragment() {
                     return@setPositiveButton
                 }
 
+                // Валидация данных карты при онлайн оплате
+                if (paymentType == "online") {
+                    val cardNumber = cardNumberInput?.text?.toString()?.replace(" ", "") ?: ""
+                    val cardName = cardNameInput?.text?.toString()?.trim() ?: ""
+                    val cardExpiry = cardExpiryInput?.text?.toString()?.trim() ?: ""
+                    val cardCvv = cardCvvInput?.text?.toString()?.trim() ?: ""
+
+                    if (cardNumber.length < 16) {
+                        Toast.makeText(requireContext(), "Введите корректный номер карты (16 цифр)", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
+
+                    if (cardName.isEmpty()) {
+                        Toast.makeText(requireContext(), "Введите имя держателя карты", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
+
+                    if (cardExpiry.length < 5 || !cardExpiry.matches(Regex("\\d{2}/\\d{2}"))) {
+                        Toast.makeText(requireContext(), "Введите корректный срок действия (ММ/ГГ)", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
+
+                    if (cardCvv.length < 3) {
+                        Toast.makeText(requireContext(), "Введите корректный CVV код (3 цифры)", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
+                }
+
                 // Продолжаем оформление
-                completeCheckout(user, deliveryType, paymentType, address, phone, comment)
+                completeCheckout(user, deliveryType, paymentType, address, phone, "")
                 dialog.dismiss()
             }
             .setNegativeButton("Отмена", null)
@@ -385,7 +469,7 @@ class CartFragment : Fragment() {
         }
 
         val message = """
-        Заказ №$orderId успешно оформлен!
+        Заказ №$orderId успешно оформлен.
         
         Сумма: ${String.format("%.2f ₽", totalAmount)}
         $deliveryText
@@ -395,15 +479,23 @@ class CartFragment : Fragment() {
     """.trimIndent()
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("✅ Заказ оформлен!")
+            .setTitle("Заказ оформлен")
             .setMessage(message)
             .setPositiveButton("Перейти к заказам") { dialog, _ ->
                 dialog.dismiss()
-                findNavController().navigate(R.id.navigation_orders)
+                // Переключаем нижнее меню на вкладку заказов
+                (requireActivity() as? MainActivity)?.let { activity ->
+                    val navView = activity.findViewById<BottomNavigationView>(R.id.nav_view)
+                    navView.selectedItemId = R.id.navigation_orders
+                }
             }
             .setNegativeButton("Продолжить покупки") { dialog, _ ->
                 dialog.dismiss()
-                findNavController().navigate(R.id.navigation_catalog)
+                // Переключаем нижнее меню обратно на каталог
+                (requireActivity() as? MainActivity)?.let { activity ->
+                    val navView = activity.findViewById<BottomNavigationView>(R.id.nav_view)
+                    navView.selectedItemId = R.id.navigation_catalog
+                }
             }
             .setCancelable(false)
             .show()
@@ -423,12 +515,23 @@ class CartFragment : Fragment() {
     }
 
     private fun removeFromCart(productId: Int) {
-        cartManager.removeFromCart(productId)
+        // Находим товар в корзине для отображения названия в диалоге
+        val cartItems = cartManager.getCartItems()
+        val cartItem = cartItems.find { it.productId == productId }
+        val productName = cartItem?.productName ?: "этот товар"
 
-        loadCartItems()
-        (requireActivity() as? MainActivity)?.refreshCartBadge()
-
-        Toast.makeText(requireContext(), "Товар удален из корзины", Toast.LENGTH_SHORT).show()
+        // Показываем диалог подтверждения
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Удаление товара")
+            .setMessage("Вы точно хотите удалить \"$productName\" из корзины?")
+            .setPositiveButton("Удалить") { _, _ ->
+                cartManager.removeFromCart(productId)
+                loadCartItems()
+                (requireActivity() as? MainActivity)?.refreshCartBadge()
+                Toast.makeText(requireContext(), "Товар удален из корзины", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
     }
 
     override fun onResume() {

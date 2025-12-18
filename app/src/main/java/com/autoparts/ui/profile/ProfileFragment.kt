@@ -1,5 +1,6 @@
 package com.autoparts.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.autoparts.AuthActivity
 import com.autoparts.R
 import com.autoparts.SessionManager
 import com.autoparts.databinding.FragmentProfileBinding
@@ -80,7 +82,13 @@ class ProfileFragment : Fragment() {
             .setMessage("Вы уверены, что хотите выйти?")
             .setPositiveButton("Выйти") { _, _ ->
                 sessionManager.logout()
-                requireActivity().finish()
+
+                // Переходим на экран авторизации и очищаем back stack
+                val intent = Intent(requireContext(), AuthActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                startActivity(intent)
+
                 Toast.makeText(requireContext(), "Вы вышли из системы", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Отмена", null)

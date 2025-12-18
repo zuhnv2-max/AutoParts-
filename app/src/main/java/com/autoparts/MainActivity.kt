@@ -58,9 +58,14 @@ class MainActivity : AppCompatActivity() {
         // Находим меню
         val menu = navView.menu
         val adminMenuItem = menu.findItem(R.id.navigation_admin)
+        val cartMenuItem = menu.findItem(R.id.navigation_cart)
+
+        val isAdmin = sessionManager.isAdmin()
 
         // Показываем админ-панель только для администраторов
-        adminMenuItem.isVisible = sessionManager.isAdmin()
+        adminMenuItem.isVisible = isAdmin
+        // Скрываем корзину для администратора
+        cartMenuItem.isVisible = !isAdmin
 
         // Если админ, добавляем админ-панель в AppBarConfiguration
         if (sessionManager.isAdmin()) {

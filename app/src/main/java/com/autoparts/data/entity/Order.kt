@@ -14,7 +14,13 @@ data class Order(
     val paymentType: String = "cash",
     val deliveryAddress: String = "",
     val deliveryPhone: String = "",
-    val comment: String = ""
+    val comment: String = "",
+    // Дополнительные детали
+    val deliveryDate: String = "", // Планируемая дата доставки
+    val trackingNumber: String = "", // Трек-номер для отслеживания
+    val courierName: String = "", // Имя курьера
+    val courierPhone: String = "", // Телефон курьера
+    val estimatedDeliveryTime: String = "" // Ориентировочное время доставки
 ) {
     fun getFormattedStatus(): String {
         return when (status) {
