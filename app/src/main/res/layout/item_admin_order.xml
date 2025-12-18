@@ -29,7 +29,7 @@
                 android:text="Заказ #0"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/text_primary" />
 
             <TextView
                 android:id="@+id/textStatus"
@@ -38,7 +38,7 @@
                 android:text="Ожидает"
                 android:textSize="12sp"
                 android:textColor="@android:color/white"
-                android:background="#FF6200EE"
+                android:background="@color/status_pending"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp" />
 
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="Пользователь: -"
             android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="4dp" />
 
         <!-- Сумма заказа -->
@@ -62,7 +62,7 @@
             android:text="Сумма: 0.00 ₽"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#FF2196F3"
+                android:textColor="@color/primary_blue"
             android:layout_marginBottom="4dp" />
 
         <!-- Дата заказа -->
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:text="Дата: -"
             android:textSize="13sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="12dp" />
 
         <!-- Разделитель -->
@@ -91,7 +91,7 @@
             android:textSize="14sp"
             android:textAllCaps="true"
             android:textColor="@android:color/white"
-            android:background="#FF4CAF50"
+            android:background="@color/success"
             android:drawableStart="@android:drawable/ic_menu_edit"
             android:drawablePadding="8dp"
             android:gravity="center" />

@@ -399,12 +399,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         article LIKE ? OR 
         brand LIKE ? OR 
         description LIKE ? OR 
-        compatibleCars LIKE ?
+        compatibleCars LIKE ? OR
+        category LIKE ?
     """.trimIndent()
 
         val searchQuery = "%$query%"
         val selectionArgs = arrayOf(
-            searchQuery, searchQuery, searchQuery, searchQuery, searchQuery
+            searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery
         )
 
         val cursor = db.query(

@@ -29,7 +29,7 @@
                 android:text="Название товара"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/text_primary" />
 
             <TextView
                 android:id="@+id/textArticle"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="Арт: -"
                 android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/text_secondary"
                 android:background="@android:color/transparent"
                 android:padding="4dp" />
 
@@ -51,7 +51,7 @@
             android:text="Бренд: -"
             android:textSize="16sp"
             android:layout_marginBottom="4dp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@color/text_secondary" />
 
         <TextView
             android:id="@+id/textPrice"
@@ -60,7 +60,7 @@
             android:text="Цена: 0.00 ₽"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#FF2196F3"
+                android:textColor="@color/primary_blue"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:text="Категория: -"
             android:textSize="16sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="12dp" />
 
         <!-- Разделитель -->
@@ -96,7 +96,7 @@
                 android:textSize="14sp"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
-                android:background="#FF4CAF50"
+                android:background="@color/success"
                 android:drawableStart="@android:drawable/ic_menu_edit"
                 android:drawablePadding="8dp"
                 android:gravity="center" />
@@ -112,7 +112,7 @@
                 android:textSize="14sp"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
-                android:background="#FFF44336"
+                android:background="@color/error"
                 android:drawableStart="@android:drawable/ic_menu_delete"
                 android:drawablePadding="8dp"
                 android:gravity="center" />
