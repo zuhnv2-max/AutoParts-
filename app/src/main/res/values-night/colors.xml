@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Blue Palette (темная тема) -->
+    <color name="primary_blue">#4A7AFF</color>
+    <color name="primary_blue_dark">#2D5BE3</color>
+    <color name="primary_blue_light">#1A2F66</color>
+
+    <!-- Secondary Orange Palette (темная тема) -->
+    <color name="secondary_orange">#FF8A5C</color>
+    <color name="secondary_orange_dark">#FF6B35</color>
+    <color name="secondary_orange_light">#4A2E1F</color>
+
+    <!-- Accent Colors (темная тема) -->
+    <color name="accent_green">#4CD964</color>
+    <color name="accent_red">#FF5C5C</color>
+    <color name="accent_yellow">#FFD700</color>
+    <color name="accent_purple">#C77DFF</color>
+
+    <!-- Neutral Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Gray Scale (темная тема) -->
+    <color name="gray_50">#1E1E1E</color>
+    <color name="gray_100">#2A2A2A</color>
+    <color name="gray_200">#353535</color>
+    <color name="gray_300">#404040</color>
+    <color name="gray_400">#5A5A5A</color>
+    <color name="gray_500">#757575</color>
+    <color name="gray_600">#9E9E9E</color>
+    <color name="gray_700">#BDBDBD</color>
+    <color name="gray_800">#E0E0E0</color>
+    <color name="gray_900">#F5F5F5</color>
+
+    <!-- Background Colors (темная тема) -->
+    <color name="background_light">#121212</color>
+    <color name="background_card">#1E1E1E</color>
+
+    <!-- Text Colors (темная тема) -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#BDBDBD</color>
+    <color name="text_hint">#757575</color>
+    <color name="text_disabled">#5A5A5A</color>
+
+    <!-- Status Colors (темная тема) -->
+    <color name="status_pending">#FFB74D</color>
+    <color name="status_processing">#64B5F6</color>
+    <color name="status_shipped">#81C784</color>
+    <color name="status_delivered">#BA68C8</color>
+    <color name="status_cancelled">#E57373</color>
+
+    <!-- Border/Outline Colors (темная тема) -->
+    <color name="outline_primary">#2A3F7A</color>
+    <color name="outline_secondary">#4A2E1F</color>
+
+    <!-- Semantic Colors (темная тема) -->
+    <color name="success">#4CD964</color>
+    <color name="warning">#FFB74D</color>
+    <color name="error">#FF5C5C</color>
+    <color name="info">#4A7AFF</color>
+
+    <!-- Overlay Colors (темная тема) -->
+    <color name="overlay_dark">#80000000</color>
+    <color name="overlay_light">#80FFFFFF</color>
+
+    <!-- Gradient Colors (темная тема) -->
+    <color name="gradient_start">#4A7AFF</color>
+    <color name="gradient_end">#2D5BE3</color>
+
+    <!-- Backward-compatible aliases for primary/accent -->
+    <color name="primary">#4A7AFF</color>
+    <color name="primary_dark">#2D5BE3</color>
+    <color name="accent">#4CD964</color>
+</resources>
+
