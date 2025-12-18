@@ -20,7 +20,8 @@
                 android:id="@+id/etProductName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Название товара" />
+                android:hint="Название товара"
+                android:textColor="@color/text_primary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -34,7 +35,8 @@
                 android:id="@+id/etArticle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Артикул" />
+                android:hint="Артикул"
+                android:textColor="@color/text_primary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,7 +50,8 @@
                 android:id="@+id/etBrand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Бренд" />
+                android:hint="Бренд"
+                android:textColor="@color/text_primary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,7 +66,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Цена"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:textColor="@color/text_primary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,7 +83,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Описание"
                 android:inputType="textMultiLine"
-                android:minLines="3" />
+                android:minLines="3"
+                android:textColor="@color/text_primary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,7 +97,8 @@
                 android:id="@+id/etCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Категория" />
+                android:hint="Категория"
+                android:textColor="@color/text_primary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

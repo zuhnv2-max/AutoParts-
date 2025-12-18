@@ -6,10 +6,5 @@ data class User(
     val email: String,
     val phone: String,
     val password: String,
-    val role: String = "user", // "user" или "admin"
-    // Дополнительные детали
-    val address: String = "", // Адрес пользователя
-    val createdAt: String = "", // Дата регистрации
-    val lastLoginAt: String = "", // Дата последнего входа
-    val avatarUrl: String = "" // URL аватара
+    val role: String = "user" // "user" или "admin"
 )
